@@ -23,6 +23,7 @@
     <module>infrastructure/api-gateway</module>
       <module>infrastructure/config-service</module>
     <module>services/UserJwt</module>
+    <module>services/credit-service</module>
 
   </modules>
 
