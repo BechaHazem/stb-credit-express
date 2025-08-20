@@ -5,6 +5,7 @@
     import org.springframework.cloud.gateway.route.RouteLocator;
     import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
     import org.springframework.context.annotation.Bean;
+    import org.springframework.web.bind.annotation.RequestMapping;
 
     @SpringBootApplication
     public class ApiGatewayApplication {
@@ -20,8 +21,14 @@
                             .uri("lb://MsMeeting"))
                     .route("MSMeeting", r -> r.path("/webDis/api/users/**")
                             .uri("lb://MsMeeting"))// Must match the `spring.application.name` of the Meeting microservice
-                    .route("MSusers", r -> r.path("/api/**")
-                            .uri("lb://node-login-service")) // Must match spring.application.name or Eureka registration name
+                    .route("UserJwt-home", r -> r
+                            .path("/user/home")
+                            .uri("http://localhost:8085"))
+                    .route("UserJwt-auth", r -> r
+                            .path("/api/auth/**")
+                            .uri("http://localhost:8085"))
+
+
                     .build();
         }
     }

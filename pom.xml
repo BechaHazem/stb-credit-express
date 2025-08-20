@@ -22,6 +22,8 @@
     <module>infrastructure/discovery-service</module>
     <module>infrastructure/api-gateway</module>
       <module>infrastructure/config-service</module>
+    <module>services/UserJwt</module>
+
   </modules>
 
   <!-- Centralised dependency versions -->
