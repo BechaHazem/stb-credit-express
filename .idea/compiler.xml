@@ -8,8 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="EurekaServer" />
-        <module name="ApiGateway" />
         <module name="config-service" />
+        <module name="credit-service" />
+        <module name="ApiGateway" />
       </profile>
       <profile name="Annotation profile for stb-credit-parent" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -28,6 +29,7 @@
       <module name="EurekaServer" options="-parameters" />
       <module name="UserJwt" options="-parameters" />
       <module name="config-service" options="-parameters" />
+      <module name="credit-service" options="-parameters" />
     </option>
   </component>
 </project>
