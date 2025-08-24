@@ -46,10 +46,8 @@ public class AuthenticationService {
                 .phone(request.getPhone())
                 .build();
         UserRepo.save(user);
-        var jwtToken = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder()
-                .token(jwtToken)
                 .role(user.getRole())
                 .statusCode(HttpStatus.OK.value())
                 .build();

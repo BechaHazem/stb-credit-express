@@ -37,15 +37,13 @@ public class AuthenticationController {
     ) {
         AuthenticationResponse authResponse = authenticationService.authenticate(request);
 
-        // Set JWT in HttpOnly cookie
         Cookie cookie = new Cookie("jwt", authResponse.getToken());
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // only in production with HTTPS
+        cookie.setSecure(false);   // <-- false for localhost
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60); // 1 day
+        cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
 
-        // Optional: don't send token in body anymore
         return ResponseEntity.ok(authResponse);
     }
 
@@ -61,6 +59,15 @@ public class AuthenticationController {
     @GetMapping("/profile")
     public ResponseEntity<User> getProfile() {
         return ResponseEntity.ok(authenticationService.getProfile());
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse res) {
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);          // delete cookie
+        res.addCookie(cookie);
+        return ResponseEntity.ok().build();
     }
 
 

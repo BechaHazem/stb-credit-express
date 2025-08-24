@@ -24,9 +24,16 @@
                     .route("UserJwt-home", r -> r
                             .path("/user/home")
                             .uri("http://localhost:8085"))
+                    .route("UserJwt-admin", r -> r
+                            .path("/admin/home")
+                            .uri("http://localhost:8085"))
                     .route("UserJwt-auth", r -> r
                             .path("/api/auth/**")
                             .uri("http://localhost:8085"))
+                    .route("UserJwt-auth", r -> r
+                            .path("/banquier/**")
+                            .uri("http://localhost:8085"))
+
 
 
                     .build();
