@@ -24,6 +24,8 @@
       <module>infrastructure/config-service</module>
     <module>services/UserJwt</module>
     <module>services/credit-service</module>
+    <module>services/notification-service</module>
+    
 
   </modules>
 

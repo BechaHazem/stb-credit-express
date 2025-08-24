@@ -4,7 +4,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class CreditSimulationResponse {
- private BigDecimal loanAmount;
+    private Long id;
+ public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+private BigDecimal loanAmount;
  private int loanTermMonths;
  private int gracePeriodMonths;
  private BigDecimal monthlyPayment;
@@ -37,5 +46,39 @@ public class CreditSimulationResponse {
  public BigDecimal getTotalInterest() { return totalInterest; }
  public BigDecimal getApr() { return apr; }
  public List<AmortizationLineDTO> getSchedule() { return schedule; }
+
+public void setLoanAmount(BigDecimal loanAmount) {
+	this.loanAmount = loanAmount;
+}
+
+public void setLoanTermMonths(int loanTermMonths) {
+	this.loanTermMonths = loanTermMonths;
+}
+
+public void setGracePeriodMonths(int gracePeriodMonths) {
+	this.gracePeriodMonths = gracePeriodMonths;
+}
+
+public void setMonthlyPayment(BigDecimal monthlyPayment) {
+	this.monthlyPayment = monthlyPayment;
+}
+
+public void setTotalCost(BigDecimal totalCost) {
+	this.totalCost = totalCost;
+}
+
+public void setTotalInterest(BigDecimal totalInterest) {
+	this.totalInterest = totalInterest;
+}
+
+public void setApr(BigDecimal apr) {
+	this.apr = apr;
+}
+
+public void setSchedule(List<AmortizationLineDTO> schedule) {
+	this.schedule = schedule;
+}
+ 
+ 
 }
 
