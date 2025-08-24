@@ -50,11 +50,22 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    @Column(name = "client_number", unique = true, nullable = false)
+    @Column(name = "client_number", unique = true, nullable = true)
     private Long clientNumber;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public String getAgence() {
+        return agence;
+    }
+
+    public void setAgence(String agence) {
+        this.agence = agence;
+    }
+
+    private String agence;   // <-- new
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
