@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .container { padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+    .btn { background-color: #1976d2; color: #fff !important; padding: 10px 15px; text-decoration: none; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>New Loan Request Submitted</h2>
+    <p>Hello Loan Department,</p>
+    <p>A new loan request has been submitted. Details are below:</p>
+
+    <ul>
+      <li><b>Customer Name:</b> <span th:text="${customerName}"></span></li>
+      <li><b>Customer Email:</b> <span th:text="${customerEmail}"></span></li>
+      <li><b>Account Number:</b> <span th:text="${accountNumber}"></span></li>
+      <li><b>Loan Amount:</b> <span th:text="${loanAmount}"></span></li>
+      <li><b>Loan Type:</b> <span th:text="${loanType}"></span></li>
+      <li><b>Submission Date:</b> <span th:text="${submissionDate}"></span></li>
+    </ul>
+
+    <p>
+      👉 <a th:href="${url}" class="btn">Review Loan Request</a>
+    </p>
+
+    <p>Thank you,<br/>Loan Management System</p>
+  </div>
+</body>
+</html>
