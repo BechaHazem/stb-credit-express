@@ -33,6 +33,10 @@
                     .route("UserJwt-auth", r -> r
                             .path("/banquier/**")
                             .uri("http://localhost:8085"))
+                    .route("Credit-producat", r -> r
+                            .path("/api/products/**")
+                            .uri("http://localhost:8094"))
+
 
 
 

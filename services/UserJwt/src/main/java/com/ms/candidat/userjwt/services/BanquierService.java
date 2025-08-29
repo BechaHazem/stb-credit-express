@@ -23,6 +23,8 @@ public class BanquierService {
     private static final SecureRandom RND = new SecureRandom();
 
     public User createBanquier(BanquierRequest dto) {
+        Long clientNumber = generateUniqueClientNumber();
+
         return UserRepo.save(
                 User.builder()
                         .firstname(dto.firstname())
@@ -32,10 +34,26 @@ public class BanquierService {
                         .phone(dto.phone())
                         .agence(dto.agence())
                         .role(Role.BANQUIER)
-                        .clientNumber(0L)
+                        .clientNumber(clientNumber)
                         .build()
         );
     }
+
+    //generate default client number
+    private Long generateUniqueClientNumber() {
+        int attempts = 0;
+        long candidate;
+        do {
+            candidate = 1_000_000_000L + RND.nextLong(9_000_000_000L);
+            attempts++;
+            if (attempts > 10) {                 // ultra-safe fallback
+                candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;
+            }
+        } while (UserRepo.existsByClientNumber(candidate));
+
+        return candidate;
+    }
+
     //update banquier
     public User updateBanquier(Integer id, BanquierRequest dto) {
         User user = UserRepo.findById(id)
@@ -50,7 +68,7 @@ public class BanquierService {
         user.setEmail(dto.email());
         user.setPhone(dto.phone());
         user.setAgence(dto.agence());
-        user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setPassword(passwordEncoder.encode(dto.phone()));
         return UserRepo.save(user);
     }
     //delete banquier
