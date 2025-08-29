@@ -20,7 +20,7 @@ public class BanquierController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> createBanquier(@Valid @RequestBody BanquierRequest dto) {
+    public ResponseEntity<User> createBanquier(@RequestBody BanquierRequest dto) {
         User saved = banquierService.createBanquier(dto);
         return ResponseEntity.ok(saved);
     }
