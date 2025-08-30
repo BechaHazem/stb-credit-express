@@ -1,14 +1,12 @@
 package com.ms.candidat.userjwt.services;
 
-import com.ms.candidat.userjwt.models.AuthenticationRequest;
-import com.ms.candidat.userjwt.models.AuthenticationResponse;
-import com.ms.candidat.userjwt.models.RegisterRequest;
-import com.ms.candidat.userjwt.repositories.UserRepository;
-import jakarta.transaction.Transactional;
+import java.security.SecureRandom;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import com.ms.candidat.userjwt.models.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +14,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.List;
+import com.ms.candidat.userjwt.client.CreditClient;
+import com.ms.candidat.userjwt.dtos.CustomerDTO;
+import com.ms.candidat.userjwt.dtos.UserDTO;
+import com.ms.candidat.userjwt.models.AuthenticationRequest;
+import com.ms.candidat.userjwt.models.AuthenticationResponse;
+import com.ms.candidat.userjwt.models.RegisterRequest;
+import com.ms.candidat.userjwt.models.Role;
+import com.ms.candidat.userjwt.models.User;
+import com.ms.candidat.userjwt.repositories.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AuthenticationService {
@@ -30,6 +37,12 @@ public class AuthenticationService {
     private JwtService jwtService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private CreditClient creditClient;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     private static final SecureRandom RND = new SecureRandom();
 
@@ -60,7 +73,8 @@ public class AuthenticationService {
         int attempts = 0;
         long candidate;
         do {
-            candidate = 1_000_000_000L + RND.nextLong(9_000_000_000L);
+//            candidate = 1_000_000_000L + RND.nextLong(9_000_000_000L);
+        	candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
             attempts++;
             if (attempts > 10) {                 // ultra-safe fallback
                 candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;
@@ -95,7 +109,7 @@ public class AuthenticationService {
     public User getUserById(Integer id) {
         return UserRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
-    public User getProfile() {
+    public UserDTO getProfile() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -103,7 +117,15 @@ public class AuthenticationService {
         } else {
             username = principal.toString();
         }
-        return UserRepo.findByEmail(username);
+        User user = UserRepo.findByEmail(username);
+        UserDTO dto = modelMapper.map(user, UserDTO.class);
+
+        if (user.getRole() == Role.CLIENT) {
+            CustomerDTO customer = creditClient.getCustomer(user.getCustomerId());
+            dto.setCustomer(customer);
+        }
+
+        return dto;
     }
 
 
