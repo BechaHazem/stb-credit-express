@@ -1,17 +1,25 @@
 package com.ms.candidat.userjwt.controllers;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ms.candidat.userjwt.dtos.UserDTO;
 import com.ms.candidat.userjwt.models.AuthenticationRequest;
 import com.ms.candidat.userjwt.models.AuthenticationResponse;
 import com.ms.candidat.userjwt.models.RegisterRequest;
 import com.ms.candidat.userjwt.models.User;
 import com.ms.candidat.userjwt.services.AuthenticationService;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,7 +49,7 @@ public class AuthenticationController {
         cookie.setHttpOnly(true);
         cookie.setSecure(false);   // <-- false for localhost
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
+//        cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(authResponse);
@@ -57,7 +65,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.getUserById(id));
     }
     @GetMapping("/profile")
-    public ResponseEntity<User> getProfile() {
+    public ResponseEntity<UserDTO> getProfile() {
         return ResponseEntity.ok(authenticationService.getProfile());
     }
     @PostMapping("/logout")
