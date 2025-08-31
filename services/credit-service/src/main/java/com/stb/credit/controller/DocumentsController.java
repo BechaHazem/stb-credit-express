@@ -20,7 +20,7 @@ public class DocumentsController {
 	@Autowired
 	private DocumentsService documentsService;
 	
-	@PostMapping("/")
+	@PostMapping
 	public List<DocumentDTO> find(@RequestBody DocumentDTO documentsDTO) {
 
 		return documentsService.find(documentsDTO);

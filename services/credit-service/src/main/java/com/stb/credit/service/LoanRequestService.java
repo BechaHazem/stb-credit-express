@@ -9,4 +9,6 @@ public interface LoanRequestService {
     List<LoanRequestDTO> getAllLoanRequests();
     LoanRequestDTO getLoanRequestById(Long id);
     List<LoanRequestDTO> getLoanRequestsByCustomerId(Long customerId);
+    List<LoanRequestDTO> getLoanRequestsByAgence(String agence);
+    LoanRequestDTO updateLoanRequest(LoanRequestDTO dto);
 }

@@ -34,7 +34,7 @@ public class LoanRequest {
     private String documents; // comma-separated or JSON string
 
     private Boolean acceptTerms;
-
+    private String agence;
     private Integer step;
     private String libelle;
 
@@ -142,6 +142,14 @@ public class LoanRequest {
 
 	public void setSimulationId(Long simulationId) {
 		this.simulationId = simulationId;
+	}
+
+	public String getAgence() {
+		return agence;
+	}
+
+	public void setAgence(String agence) {
+		this.agence = agence;
 	}
     
     

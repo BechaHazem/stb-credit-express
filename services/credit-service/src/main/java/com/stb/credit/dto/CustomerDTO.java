@@ -16,7 +16,7 @@ public class CustomerDTO {
     private String city;
     private String postalCode;
     private String phone;
-
+    private String accountNumber;
     // Spouse info
     private String spouseName;
     private String spouseEmail;
@@ -30,6 +30,14 @@ public class CustomerDTO {
     private String spouseCity;
     private String spousePostalCode;
     private String spousePhone;
+    
+    
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
 	public Long getId() {
 		return id;
 	}
