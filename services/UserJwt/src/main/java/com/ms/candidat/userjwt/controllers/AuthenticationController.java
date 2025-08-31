@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ms.candidat.userjwt.dtos.UserDTO;
@@ -78,6 +79,9 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-
+    @GetMapping("/by-agence")
+    public List<UserDTO> getByAgence(@RequestParam String agence) {
+        return authenticationService.findByAgence(agence);
+    }
 
 }
