@@ -10,5 +10,6 @@ import com.stb.credit.models.LoanRequest;
 @Repository
 public interface LoanRequestRepository extends JpaRepository<LoanRequest, Long> {
 	List<LoanRequest> findByCustomerId(Long customerId);
+	List<LoanRequest> findByAgence(String agence);
 
 }

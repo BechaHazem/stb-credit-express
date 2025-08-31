@@ -14,6 +14,7 @@ public class LoanRequestDTO {
     private Boolean acceptTerms;
     private Integer step;
     private String libelle;
+    private String agence;
     private Long simulationId;
 	public Long getId() {
 		return id;
@@ -92,6 +93,12 @@ public class LoanRequestDTO {
 	}
 	public void setSimulationId(Long simulationId) {
 		this.simulationId = simulationId;
+	}
+	public String getAgence() {
+		return agence;
+	}
+	public void setAgence(String agence) {
+		this.agence = agence;
 	}
     
     

@@ -3,16 +3,21 @@ package com.stb.credit.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.stb.credit.dto.LoanRequestDTO;
 import com.stb.credit.service.LoanRequestService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/loan-requests")
@@ -43,14 +48,22 @@ public class LoanRequestController {
         return ResponseEntity.ok(requests);
     }
     
-//    @GetMapping("/{id}/pdf")
-//    public ResponseEntity<byte[]> getLoanPdf(@PathVariable Long id) {
-//        LoanRequestDTO loanRequest = loanRequestService.getLoanRequestById(id);
-//        byte[] pdfBytes = pdfReportService.generateLoanRequestPdf(loanRequest);
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "inline; filename=loan_request_" + id + ".pdf")
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(pdfBytes);
-//    }
+    @GetMapping("/banker/{agence}")
+    public ResponseEntity<List<LoanRequestDTO>> getLoanRequestsByAgence(@PathVariable String agence) {
+        List<LoanRequestDTO> requests = loanRequestService.getLoanRequestsByAgence(agence);
+        return ResponseEntity.ok(requests);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<LoanRequestDTO> updateLoanRequest(
+            @PathVariable Long id,
+            @Valid @RequestBody LoanRequestDTO dto) {
+
+        if (!id.equals(dto.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID mismatch");
+        }
+        LoanRequestDTO updated = loanRequestService.updateLoanRequest(dto);
+        return ResponseEntity.ok(updated);
+    }
+    
+
 }

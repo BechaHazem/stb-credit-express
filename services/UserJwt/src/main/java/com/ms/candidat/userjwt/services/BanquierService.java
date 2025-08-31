@@ -1,15 +1,16 @@
 package com.ms.candidat.userjwt.services;
 
-import com.ms.candidat.userjwt.models.BanquierRequest;
-import com.ms.candidat.userjwt.models.Role;
-import com.ms.candidat.userjwt.models.User;
-import com.ms.candidat.userjwt.repositories.UserRepository;
+import java.security.SecureRandom;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.List;
+import com.ms.candidat.userjwt.models.BanquierRequest;
+import com.ms.candidat.userjwt.models.Role;
+import com.ms.candidat.userjwt.models.User;
+import com.ms.candidat.userjwt.repositories.UserRepository;
 
 
 @Service
@@ -44,7 +45,7 @@ public class BanquierService {
         int attempts = 0;
         long candidate;
         do {
-            candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
+        	candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
             attempts++;
             if (attempts > 10) {                 // ultra-safe fallback
                 candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;

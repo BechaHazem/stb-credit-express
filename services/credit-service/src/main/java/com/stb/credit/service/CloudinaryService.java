@@ -1,7 +1,12 @@
 package com.stb.credit.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import com.cloudinary.Cloudinary;
@@ -26,5 +31,22 @@ public class CloudinaryService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file to Cloudinary", e);
         }
+    }
+    
+    
+    public byte[] downloadFile(String fileUrl) throws IOException {
+        URL url = new URL(fileUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+
+        try (InputStream in = connection.getInputStream()) {
+            return in.readAllBytes();
+        }
+    }
+
+    public ByteArrayResource downloadAsResource(String fileUrl) throws IOException {
+        byte[] fileData = downloadFile(fileUrl);
+        return new ByteArrayResource(fileData);
     }
 }

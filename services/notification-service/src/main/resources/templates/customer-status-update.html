@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mise à jour de votre demande de crédit</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
+    .container { max-width: 600px; margin: 30px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+    .header { background-color: #0b4da1; color: #fff; padding: 20px; text-align: center; }
+    .content { padding: 20px 30px; }
+    .btn { background-color: #0b4da1; color: #fff !important; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 15px; }
+    .highlight { color: #0b4da1; font-weight: bold; }
+    .footer { font-size: 12px; color: #666; text-align: center; padding: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 th:text="${subject}">Mise à jour de votre demande de crédit</h1>
+    </div>
+
+    <div class="content">
+      <p>Bonjour <span class="highlight" th:text="${customerName}">M. Client</span>,</p>
+
+      <p th:text="${bodyLine}">
+        Nous vous informons que le statut de votre demande de crédit a été mis à jour.
+      </p>
+
+      <ul>
+        <li><b>Type de crédit :</b> <span th:text="${loanType}">—</span></li>
+        <li><b>Montant demandé :</b> <span th:text="${loanAmount}">—</span></li>
+        <li><b>N° de dossier :</b> <span th:text="${accountNumber}">—</span></li>
+        <li><b>Nouveau statut :</b> <span class="highlight" th:text="${libelle}">—</span></li>
+      </ul>
+
+      <a th:href="${actionUrl}" class="btn">Suivre ma demande</a>
+
+      <p>Cordialement,<br/>
+         <b>Société Tunisienne de Banque</b><br/>
+         Service Crédits</p>
+    </div>
+
+    <div class="footer">
+      © 2025 STB – Tous droits réservés
+    </div>
+  </div>
+</body>
+</html>
