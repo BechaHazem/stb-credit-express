@@ -44,7 +44,7 @@ public class BanquierService {
         int attempts = 0;
         long candidate;
         do {
-            candidate = 1_000_000_000L + RND.nextLong(9_000_000_000L);
+            candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
             attempts++;
             if (attempts > 10) {                 // ultra-safe fallback
                 candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;

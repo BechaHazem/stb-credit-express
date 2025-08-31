@@ -62,7 +62,7 @@ public class JwtService {
                 //begin
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 //expired
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSigningToken(), SignatureAlgorithm.HS256)
                 //generate the token
                 .compact();
