@@ -16,6 +16,8 @@ public class LoanRequestDTO {
     private String libelle;
     private String agence;
     private Long simulationId;
+    
+    
 	public Long getId() {
 		return id;
 	}
@@ -100,6 +102,6 @@ public class LoanRequestDTO {
 	public void setAgence(String agence) {
 		this.agence = agence;
 	}
-    
+
     
 }

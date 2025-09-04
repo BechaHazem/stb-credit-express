@@ -1,5 +1,7 @@
 package com.stb.credit.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,9 @@ public class Customer {
 	    private String postalCode;
 	    private String phone;
 
+	    private Integer age;
+	    private BigDecimal monthlyExpenses;
+	    private BigDecimal monthlyIncome;
 	    // Spouse info
 	    private String spouseName;
 	    private String spouseEmail;
@@ -199,6 +204,24 @@ public class Customer {
 		}
 		public void setSpousePhone(String spousePhone) {
 			this.spousePhone = spousePhone;
+		}
+		public Integer getAge() {
+			return age;
+		}
+		public void setAge(Integer age) {
+			this.age = age;
+		}
+		public BigDecimal getMonthlyExpenses() {
+			return monthlyExpenses;
+		}
+		public void setMonthlyExpenses(BigDecimal monthlyExpenses) {
+			this.monthlyExpenses = monthlyExpenses;
+		}
+		public BigDecimal getMonthlyIncome() {
+			return monthlyIncome;
+		}
+		public void setMonthlyIncome(BigDecimal monthlyIncome) {
+			this.monthlyIncome = monthlyIncome;
 		}
 	    
 	    
