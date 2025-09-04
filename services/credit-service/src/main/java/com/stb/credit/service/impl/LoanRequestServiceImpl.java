@@ -191,6 +191,10 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
         LoanRequest saved = loanRequestRepository.save(existing);
         LoanRequestDTO savedDTO = modelMapper.map(saved, LoanRequestDTO.class);
+        if(saved.getStep() == 1) {
+        generateLoanRequestPdf(saved);
+        }
+        
         sendCustomerStatusUpdate(savedDTO);
         return savedDTO;
     }

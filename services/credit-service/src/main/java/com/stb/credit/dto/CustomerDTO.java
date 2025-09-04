@@ -1,5 +1,7 @@
 package com.stb.credit.dto;
 
+import java.math.BigDecimal;
+
 public class CustomerDTO {
 
 	
@@ -17,6 +19,9 @@ public class CustomerDTO {
     private String postalCode;
     private String phone;
     private String accountNumber;
+    private Integer age;
+    private BigDecimal monthlyExpenses;
+    private BigDecimal monthlyIncome;
     // Spouse info
     private String spouseName;
     private String spouseEmail;
@@ -187,6 +192,24 @@ public class CustomerDTO {
 	}
 	public void setSpousePhone(String spousePhone) {
 		this.spousePhone = spousePhone;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	public BigDecimal getMonthlyExpenses() {
+		return monthlyExpenses;
+	}
+	public void setMonthlyExpenses(BigDecimal monthlyExpenses) {
+		this.monthlyExpenses = monthlyExpenses;
+	}
+	public BigDecimal getMonthlyIncome() {
+		return monthlyIncome;
+	}
+	public void setMonthlyIncome(BigDecimal monthlyIncome) {
+		this.monthlyIncome = monthlyIncome;
 	}
     
     
