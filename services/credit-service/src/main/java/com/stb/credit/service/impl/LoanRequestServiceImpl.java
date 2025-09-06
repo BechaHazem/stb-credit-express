@@ -1,5 +1,8 @@
 package com.stb.credit.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -8,6 +11,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.element.Image;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +38,7 @@ import com.stb.credit.repository.LoanRequestRepository;
 import com.stb.credit.service.CloudinaryService;
 import com.stb.credit.service.LoanRequestService;
 import com.stb.credit.service.PdfReportService;
+
 
 import jakarta.transaction.Transactional;
 
@@ -87,7 +97,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest saved = loanRequestRepository.save(loanRequest);
         LoanRequestDTO result = modelMapper.map(saved, LoanRequestDTO.class);
 
-//        generateLoanRequestPdf(saved);
+       generateLoanRequestPdf(saved);
         sendMail(result);
 
         return result;
@@ -192,7 +202,68 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest saved = loanRequestRepository.save(existing);
         LoanRequestDTO savedDTO = modelMapper.map(saved, LoanRequestDTO.class);
         sendCustomerStatusUpdate(savedDTO);
+        generateLoanRequestPdf(saved);
         return savedDTO;
+    }
+
+    @Override
+    @Transactional
+    public void attachSignatureToLoanRequest(Long loanRequestId, String signatureUrl) throws IOException {
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
+
+        // 1. Récupérer le document PDF de ce loan request
+        Document document = documentRepository.findByLoanRequestId(loanRequestId)
+                .stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("Loan request PDF not found"));
+
+        byte[] pdfBytes = cloudinaryService.downloadFile(document.getUrl());
+
+        // 2. Télécharger la signature depuis Cloudinary
+        byte[] signatureBytes = cloudinaryService.downloadFile(signatureUrl);
+
+// 3. Fusionner la signature dans le PDF
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PdfDocument pdfDoc = new PdfDocument(
+                new PdfReader(new ByteArrayInputStream(pdfBytes)),
+                new PdfWriter(baos)
+        );
+        com.itextpdf.layout.Document doc = new com.itextpdf.layout.Document(pdfDoc);
+
+        ImageData imageData = ImageDataFactory.create(signatureBytes);
+        Image signatureImage = new Image(imageData);
+
+// Coordonnées de la box (mêmes que lors de la génération du PDF)
+        float boxX = 100;      // coin gauche du rectangle
+        float boxY = 120;      // coin bas du rectangle
+        float boxWidth = 400;
+        float boxHeight = 100;
+
+// Taille max de la signature (un peu plus petite que la box)
+        signatureImage.scaleToFit(boxWidth - 40, boxHeight - 40);
+
+// Positionner la signature en haut à gauche de la box
+        float marginLeft = 15;  // marge depuis le bord gauche
+        float marginTop = 15;   // marge depuis le bord haut
+
+        signatureImage.setFixedPosition(
+                boxX + marginLeft,
+                boxY + boxHeight - signatureImage.getImageScaledHeight() - marginTop
+        );
+
+        doc.add(signatureImage);
+        doc.close();
+
+        // 4. Ré-uploader le nouveau PDF signé
+        String signedPdfUrl = cloudinaryService.uploadFile(
+                baos.toByteArray(),
+                "loan_request_signed_" + loanRequestId
+        );
+
+        // 5. Mettre à jour le document existant
+        document.setUrl(signedPdfUrl);
+        document.setName("Signed Loan Request PDF");
+        documentRepository.save(document);
     }
 
     void sendCustomerStatusUpdate(LoanRequestDTO loan) {

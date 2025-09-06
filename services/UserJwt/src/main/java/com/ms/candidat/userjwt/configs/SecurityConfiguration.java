@@ -28,9 +28,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // 1. allow everything under /api/auth (including /authenticate and OPTIONS)
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // 2. the remaining rules (they are narrower and come AFTER)
+                        .requestMatchers("/api/auth/authenticate", "/api/auth/register", "/api/auth/logout").permitAll()
+                        .requestMatchers("/api/auth/profile").authenticated()
                         .requestMatchers("/admin/home").hasAuthority("CLIENT")
                         .requestMatchers("/user/home").hasAuthority("BANQUIER")
                         .requestMatchers("/banquier/**").hasAuthority("ADMIN")
