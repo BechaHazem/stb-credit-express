@@ -21,7 +21,7 @@ public class LoanRequestController {
     private  LoanRequestService loanRequestService;
 	
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<LoanRequestDTO> createLoanRequest(@RequestBody LoanRequestDTO dto) {
         LoanRequestDTO saved = loanRequestService.createLoanRequest(dto);
         return ResponseEntity.ok(saved);
@@ -47,7 +47,7 @@ public class LoanRequestController {
         List<LoanRequestDTO> requests = loanRequestService.getLoanRequestsByAgence(agence);
         return ResponseEntity.ok(requests);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<LoanRequestDTO> updateLoanRequest(
             @PathVariable Long id,
             @Valid @RequestBody LoanRequestDTO dto) {
