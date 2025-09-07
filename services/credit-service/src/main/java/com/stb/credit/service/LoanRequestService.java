@@ -1,5 +1,6 @@
 package com.stb.credit.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.stb.credit.dto.LoanRequestDTO;
@@ -11,4 +12,5 @@ public interface LoanRequestService {
     List<LoanRequestDTO> getLoanRequestsByCustomerId(Long customerId);
     List<LoanRequestDTO> getLoanRequestsByAgence(String agence);
     LoanRequestDTO updateLoanRequest(LoanRequestDTO dto);
+    public void attachSignatureToLoanRequest(Long loanRequestId, String signatureUrl) throws IOException;
 }

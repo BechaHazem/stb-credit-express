@@ -1,6 +1,6 @@
-package com.ms.candidat.userjwt.dtos;
+package com.ms.candidat.signaturemicroservice.Dto;
 
-import com.ms.candidat.userjwt.models.Role;
+
 
 public class UserDTO {
     private Integer id;
@@ -8,17 +8,7 @@ public class UserDTO {
     private String lastname;
     private String email;
     private Long clientNumber;
-    private Role role;
     private String agence;
-    private String username;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getAgence() {
 		return agence;
@@ -34,12 +24,7 @@ public class UserDTO {
 	public void setClientNumber(Long clientNumber) {
 		this.clientNumber = clientNumber;
 	}
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
-	}
+
 	// Getters and setters
     public Integer getId() {
         return id;

@@ -81,7 +81,7 @@ public class PdfReportService {
             document.add(new Paragraph("\n\nElectronic Signature")
                     .setBold()
                     .setFontSize(14)
-                    .setMarginTop(20));
+                    .setMarginTop(30));
 
             Table signatureTable = new Table(UnitValue.createPercentArray(new float[]{1}))
                     .useAllAvailableWidth();

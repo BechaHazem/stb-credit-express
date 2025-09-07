@@ -50,6 +50,13 @@ public class AuthenticationService {
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         Long clientNumber = generateUniqueClientNumber();
+        String username;
+        if (request.getRole() == Role.CLIENT) {
+            username = clientNumber.toString();
+        } else {
+            username = request.getEmail();
+        }
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -58,6 +65,7 @@ public class AuthenticationService {
                 .role(request.getRole())// Use the role from the request
                 .clientNumber(clientNumber)
                 .phone(request.getPhone())
+                .username(username)
                 .build();
         UserRepo.save(user);
 
@@ -87,10 +95,12 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var user = UserRepo.findByEmail(request.getEmail());
+        var user = UserRepo.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUsername(),
                         request.getPassword()
                 )
         );
@@ -118,7 +128,8 @@ public class AuthenticationService {
         } else {
             username = principal.toString();
         }
-        User user = UserRepo.findByEmail(username);
+        User user = UserRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDTO dto = modelMapper.map(user, UserDTO.class);
 
         if (user.getRole() == Role.CLIENT) {
