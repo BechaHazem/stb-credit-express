@@ -36,6 +36,13 @@
                     .route("Credit-producat", r -> r
                             .path("/api/products/**")
                             .uri("http://localhost:8094"))
+                    .route("signature", r -> r
+                            .path("/api/signatures/**")
+                            .uri("http://localhost:8086"))
+                    .route("loan-attach", r -> r
+                            .path("/api/loan-requests/**")
+                            .uri("http://localhost:8094"))
+
 
 
 

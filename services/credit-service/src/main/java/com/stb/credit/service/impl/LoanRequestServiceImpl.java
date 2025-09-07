@@ -247,12 +247,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         signatureImage.scaleToFit(boxWidth - 40, boxHeight - 40);
 
 // Positionner la signature en haut à gauche de la box
-        float marginLeft = 15;  // marge depuis le bord gauche
-        float marginTop = 15;   // marge depuis le bord haut
+        float marginLeft = 15;   // marge gauche
+        float marginTop = 1;    // marge haute
 
         signatureImage.setFixedPosition(
                 boxX + marginLeft,
-                boxY + boxHeight - signatureImage.getImageScaledHeight() - marginTop
+                boxY + boxHeight - marginTop - signatureImage.getImageScaledHeight()
         );
 
         doc.add(signatureImage);

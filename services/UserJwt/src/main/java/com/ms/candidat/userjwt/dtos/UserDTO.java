@@ -10,6 +10,15 @@ public class UserDTO {
     private Long clientNumber;
     private Role role;
     private String agence;
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getAgence() {
 		return agence;

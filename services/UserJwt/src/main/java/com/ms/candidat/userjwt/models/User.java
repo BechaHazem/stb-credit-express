@@ -41,8 +41,24 @@ public class User implements UserDetails {
     private String password;
 
     private String phone;
-    
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private Long customerId;
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
+
 
     public Long getClientNumber() {
         return clientNumber;
@@ -92,7 +108,7 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         // the unique identifier here is email
-        return email;
+        return username;
     }
 
     @Override

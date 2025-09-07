@@ -25,17 +25,21 @@ public class BanquierService {
 
     public User createBanquier(BanquierRequest dto) {
         Long clientNumber = generateUniqueClientNumber();
+        String username;
+        username = dto.email();
+
 
         return UserRepo.save(
                 User.builder()
                         .firstname(dto.firstname())
                         .lastname(dto.lastname())
                         .email(dto.email())
-                        .password(dto.phone())
+                        .password(passwordEncoder.encode(dto.phone()))
                         .phone(dto.phone())
                         .agence(dto.agence())
                         .role(Role.BANQUIER)
                         .clientNumber(clientNumber)
+                        .username(username)
                         .build()
         );
     }
@@ -57,6 +61,9 @@ public class BanquierService {
 
     //update banquier
     public User updateBanquier(Integer id, BanquierRequest dto) {
+        String username;
+        username = dto.email();
+
         User user = UserRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Banquier not found"));
 
@@ -70,6 +77,7 @@ public class BanquierService {
         user.setPhone(dto.phone());
         user.setAgence(dto.agence());
         user.setPassword(passwordEncoder.encode(dto.phone()));
+        user.setUsername(username);
         return UserRepo.save(user);
     }
     //delete banquier
