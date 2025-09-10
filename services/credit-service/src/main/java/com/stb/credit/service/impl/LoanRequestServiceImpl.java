@@ -97,7 +97,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest saved = loanRequestRepository.save(loanRequest);
         LoanRequestDTO result = modelMapper.map(saved, LoanRequestDTO.class);
 
-       generateLoanRequestPdf(saved);
+      // generateLoanRequestPdf(saved);
         sendMail(result);
 
         return result;
@@ -206,7 +206,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         }
         
         sendCustomerStatusUpdate(savedDTO);
-        generateLoanRequestPdf(saved);
+        //generateLoanRequestPdf(saved);
         return savedDTO;
     }
 
