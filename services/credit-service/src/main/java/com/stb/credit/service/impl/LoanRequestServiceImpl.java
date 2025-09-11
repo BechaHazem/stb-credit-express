@@ -11,17 +11,17 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.element.Image;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.stb.client.NotificationClient;
 import com.stb.client.UserClient;
 import com.stb.credit.dto.EmailDTO;
@@ -38,7 +38,6 @@ import com.stb.credit.repository.LoanRequestRepository;
 import com.stb.credit.service.CloudinaryService;
 import com.stb.credit.service.LoanRequestService;
 import com.stb.credit.service.PdfReportService;
-
 
 import jakarta.transaction.Transactional;
 
@@ -300,7 +299,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         model.put("loanAmount", loan.getLoanAmount());
         model.put("libelle", libelle);
         model.put("bodyLine", bodyLine);
-        model.put("actionUrl", "http://localhost:4200/loan-requests/" + loan.getAccountNumber());
+        model.put("actionUrl", "http://localhost:4200/loan-requests/");
 
         // 4. send
         EmailDTO email = new EmailDTO();

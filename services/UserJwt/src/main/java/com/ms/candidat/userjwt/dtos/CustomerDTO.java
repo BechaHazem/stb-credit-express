@@ -1,5 +1,7 @@
 package com.ms.candidat.userjwt.dtos;
 
+import java.math.BigDecimal;
+
 public class CustomerDTO {
 
 	
@@ -30,6 +32,21 @@ public class CustomerDTO {
     private String spouseCity;
     private String spousePostalCode;
     private String spousePhone;
+    
+    private String accountNumber;
+    
+    private Integer age;
+    private BigDecimal monthlyExpenses;
+    private BigDecimal monthlyIncome;
+
+    
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -179,6 +196,24 @@ public class CustomerDTO {
 	}
 	public void setSpousePhone(String spousePhone) {
 		this.spousePhone = spousePhone;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	public BigDecimal getMonthlyExpenses() {
+		return monthlyExpenses;
+	}
+	public void setMonthlyExpenses(BigDecimal monthlyExpenses) {
+		this.monthlyExpenses = monthlyExpenses;
+	}
+	public BigDecimal getMonthlyIncome() {
+		return monthlyIncome;
+	}
+	public void setMonthlyIncome(BigDecimal monthlyIncome) {
+		this.monthlyIncome = monthlyIncome;
 	}
     
     
