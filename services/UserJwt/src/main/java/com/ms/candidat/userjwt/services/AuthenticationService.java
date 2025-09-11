@@ -141,7 +141,7 @@ public class AuthenticationService {
     }
     
     public List<UserDTO> findByAgence(String agence) {
-        return UserRepo.findByAgence(agence) // récupère la liste d’entités User
+        return UserRepo.findByAgenceAndRole(agence, Role.BANQUIER) // récupère la liste d’entités User
                 .stream()
                 .map(user -> modelMapper.map(user, UserDTO.class)) // convertit User → UserDTO
                 .collect(Collectors.toList());    }
