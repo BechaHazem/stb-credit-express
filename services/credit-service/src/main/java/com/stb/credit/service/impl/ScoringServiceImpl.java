@@ -56,7 +56,7 @@ public class ScoringServiceImpl implements ScoringService {
 
 	            XSSFFormulaEvaluator evaluator = finWorkBook.getCreationHelper()
                         .createFormulaEvaluator();
-evaluator.evaluateAll();  
+	            evaluator.evaluateAll();  
 	            Map<String, Object> mapResults = new HashMap<>();
 	            for (int rowIndex = 1; rowIndex <= outSheet.getLastRowNum(); rowIndex++) {
 	                Row row = outSheet.getRow(rowIndex);
@@ -77,7 +77,11 @@ evaluator.evaluateAll();
 	                    
 	                }
 	            }
-	            
+	            if (mapResults != null && mapResults.containsKey("score")) {
+	                BigDecimal score = new BigDecimal(mapResults.get("score").toString());
+	                customerService.updateScore(loan.getCustomer().getId(), score); 
+
+	            }
 	            return mapResults;
 	        }
 	    } catch (Exception e) {

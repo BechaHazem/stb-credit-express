@@ -1,4 +1,6 @@
 package com.stb.credit.service.impl;
+import java.math.BigDecimal;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,8 @@ import com.stb.credit.dto.CustomerDTO;
 import com.stb.credit.models.Customer;
 import com.stb.credit.repository.CustomerRepository;
 import com.stb.credit.service.CustomerService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -24,5 +28,16 @@ public class CustomerServiceImpl implements CustomerService {
         Customer entity = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + id));
         return modelMapper.map(entity, CustomerDTO.class);
+    }
+    
+    @Override
+    @Transactional
+    public CustomerDTO updateScore(Long customerId, BigDecimal newScore) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found " + customerId));
+
+        customer.setScore(newScore);         
+        Customer saved = customerRepository.save(customer);
+        return modelMapper.map(saved, CustomerDTO.class);
     }
 }

@@ -11,4 +11,5 @@ public interface CreditSimulationService {
     CreditSimulation saveSimulation(Long customerId, CreditSimulationResponse dto);
     CreditSimulation updateSimulation(Long id, CreditSimulationResponse dto);
     List<CreditSimulation> getSimulationsForCustomer(Long customerId);
+    CreditSimulation getSimulationById(Long id);
 }

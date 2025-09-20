@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,7 +136,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         model.put("loanAmount", loan.getLoanAmount()); 
         model.put("loanType", loan.getCreditType());
         model.put("submissionDate", LocalDate.now().toString());
-        model.put("url", "http://localhost:4200/loan-requests/");
+        model.put("url", "http://localhost:4200/");
 
 
         bankers.stream()
@@ -203,10 +204,33 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         if(saved.getStep() == 1) {
         generateLoanRequestPdf(saved);
         }
+        if(saved.getStep() == 3) {
+        	saveDocs(saved);
+        }
         
         sendCustomerStatusUpdate(savedDTO);
         //generateLoanRequestPdf(saved);
         return savedDTO;
+    }
+    
+    private void saveDocs(LoanRequest saved) {
+    	
+    	List<Document> listDocs = new ArrayList<>();
+    	
+    	Document document = new Document();
+    	document.setCustomerId(saved.getCustomer().getId());
+    	document.setLoanRequestId(saved.getId());
+    	document.setName("CIN");
+    	listDocs.add(document);
+    	
+    	Document document2 = new Document();
+    	document2.setCustomerId(saved.getCustomer().getId());
+    	document2.setLoanRequestId(saved.getId());
+    	document2.setName("domiciliation de salaire");
+    	listDocs.add(document2);
+    	
+    	documentRepository.saveAll(listDocs);
+    	
     }
 
     @Override
@@ -285,7 +309,19 @@ public class LoanRequestServiceImpl implements LoanRequestService {
             subject = "Votre demande de crédit a été acceptée";
             bodyLine = "Félicitations ! Votre demande de crédit a été acceptée. "
                      + "Vous pouvez désormais signer le contrat préliminaire en ligne.";
-        } else {
+        }
+        else if (loan.getStep() == 4) {
+            subject = "Votre crédit a été émis avec succès";
+            bodyLine = "Félicitations ! Votre crédit a été émis avec succès. "
+                     + "Vous pouvez vous rendre à l’agence "
+                     + (loan.getAgence() != null ? loan.getAgence() : "bancaire")
+                     + " pour retirer vos fonds.";        subject = "Votre crédit a été émis avec succès";
+                     bodyLine = "Félicitations ! Votre crédit a été émis avec succès. "
+                             + "Vous pouvez vous rendre à l’agence "
+                             + (loan.getAgence() != null ? loan.getAgence() : "bancaire")
+                             + " pour retirer vos fonds.";
+        }
+        else {
             subject = "Mise à jour de votre demande de crédit";
             bodyLine = "Nous vous informons que le statut de votre demande de crédit a été mis à jour : "
                      + libelle + ".";
@@ -299,7 +335,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         model.put("loanAmount", loan.getLoanAmount());
         model.put("libelle", libelle);
         model.put("bodyLine", bodyLine);
-        model.put("actionUrl", "http://localhost:4200/loan-requests/");
+        model.put("actionUrl", "http://localhost:4200/");
 
         // 4. send
         EmailDTO email = new EmailDTO();

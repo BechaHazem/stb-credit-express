@@ -27,5 +27,9 @@ public class DocumentsController {
 	}
 	
  
-
+    @PostMapping("/save-documents")
+    public List<DocumentDTO> saveDocuments(@RequestBody List<DocumentDTO> documentsDTOs) {
+    	
+        return documentsService.saveDocuments(documentsDTOs);
+    }
 }

@@ -50,4 +50,9 @@ public class CreditSimulationController {
  public java.util.List<CreditSimulation> getCustomerSimulations(@PathVariable Long customerId) {
      return simulationService.getSimulationsForCustomer(customerId);
  }
+ @GetMapping("/simulation/{id}")
+ public CreditSimulation getSimulationById(@PathVariable Long id) {
+     return simulationService.getSimulationById(id);
+ }
+
 }
