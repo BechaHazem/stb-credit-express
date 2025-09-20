@@ -152,4 +152,10 @@ public class CreditSimulationServiceImpl implements CreditSimulationService {
      );
      return sim;
  }
+ 
+ @Override
+ public CreditSimulation getSimulationById(Long id) {
+     return repository.findById(id)
+             .orElseThrow(() -> new RuntimeException("Simulation not found with id: " + id));
+ }
 }

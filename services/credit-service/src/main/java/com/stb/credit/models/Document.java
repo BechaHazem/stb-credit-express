@@ -15,6 +15,16 @@ public class Document {
     private Long customerId;
     private Long loanRequestId;
     private String name;
+    private String contentType;
+
+    
+    
+	public String getContentType() {
+		return contentType;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
 	public Long getId() {
 		return id;
 	}

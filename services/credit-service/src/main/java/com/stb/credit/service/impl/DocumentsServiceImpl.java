@@ -2,6 +2,7 @@ package com.stb.credit.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -37,8 +38,19 @@ public class DocumentsServiceImpl implements DocumentsService {
 	public List<DocumentDTO> find(DocumentDTO documentsDTO) {
 
 
-		   List<Document> documents = documentsRepository.findByLoanRequestIdAndCustomerId(documentsDTO.getLoanRequestId(), documentsDTO.getCustomerId());
-
+		   List<Document> documents;
+		    if (documentsDTO.getListName() != null && documentsDTO.getListName().size() > 0) {
+		        documents = documentsRepository.findByLoanRequestIdAndCustomerIdAndNameIn(
+		                documentsDTO.getLoanRequestId(),
+		                documentsDTO.getCustomerId(),
+		                documentsDTO.getListName()
+		        );
+		    } else {
+		        documents = documentsRepository.findByLoanRequestIdAndCustomerId(
+		                documentsDTO.getLoanRequestId(),
+		                documentsDTO.getCustomerId()
+		        );
+		    }
 		    List<DocumentDTO> dtos = new ArrayList<>();
 
 		    for (Document document : documents) {
@@ -47,7 +59,7 @@ public class DocumentsServiceImpl implements DocumentsService {
 		        if (document.getUrl() != null && !document.getUrl().isEmpty()) {
 		            try {
 		                byte[] fileData = cloudinaryService.downloadFile(document.getUrl());
-		                dto.setFileBytes(fileData);
+		                dto.setFileBytes(Base64.getEncoder().encodeToString(fileData));
 		            } catch (IOException e) {
 		                logger.warn("Failed to fetch file from Cloudinary for doc ID: {}", document.getId(), e);
 		            }
@@ -56,6 +68,47 @@ public class DocumentsServiceImpl implements DocumentsService {
 		        dtos.add(dto);
 		    }
 		    return dtos;
+	}
+
+	@Override
+	public List<DocumentDTO> saveDocuments(List<DocumentDTO> documents) {
+	    List<DocumentDTO> savedDocs = new ArrayList<>();
+
+	    for (DocumentDTO dto : documents) {
+	        if (dto.getFileBytes() != null) {
+	            // Clean base64 prefix if needed
+	            String base64Data = dto.getFileBytes();
+	            if (base64Data.contains(",")) {
+	                base64Data = base64Data.split(",")[1];
+	            }
+
+	            byte[] fileData = Base64.getDecoder().decode(base64Data);
+
+	            // Upload to Cloudinary
+	            String url = cloudinaryService.uploadFile(fileData, dto.getFileName());
+
+	            // Persist
+	            Document entity = new Document();
+	            entity.setId(dto.getId());
+	            entity.setCustomerId(dto.getCustomerId());
+	            entity.setLoanRequestId(dto.getLoanRequestId());
+	            entity.setName(dto.getName());
+	            entity.setContentType(dto.getContentType());
+	            entity.setUrl(url);
+
+	            Document saved = documentsRepository.save(entity);
+
+	            DocumentDTO response = new DocumentDTO();
+	            response.setId(saved.getId());
+	            response.setUrl(saved.getUrl());
+	            response.setCustomerId(saved.getCustomerId());
+	            response.setLoanRequestId(saved.getLoanRequestId());
+	            response.setName(saved.getName());
+	            response.setContentType(saved.getContentType());
+	            savedDocs.add(response);
+	        }
+	    }
+	    return savedDocs;
 	}
 
 

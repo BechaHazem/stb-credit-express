@@ -36,7 +36,17 @@ public class CustomerDTO {
     private String spousePostalCode;
     private String spousePhone;
     
+    private BigDecimal score;
     
+    
+    
+    
+	public BigDecimal getScore() {
+		return score;
+	}
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
 	public String getAccountNumber() {
 		return accountNumber;
 	}

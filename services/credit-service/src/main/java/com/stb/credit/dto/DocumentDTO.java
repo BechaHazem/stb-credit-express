@@ -1,5 +1,7 @@
 package com.stb.credit.dto;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public class DocumentDTO {
@@ -8,16 +10,40 @@ public class DocumentDTO {
     private Long customerId;
     private Long loanRequestId;
     private String name;
-
+    private String contentType;
+    private List<String> listName;
     // For upload
     private MultipartFile file;
+    private String fileName;
 
     // For download (when retrieved from Cloudinary)
-    private byte[] fileBytes;
+    private String fileBytes;
 
     public DocumentDTO() {}
+    
+    
 
-    // Getters and Setters
+    public String getFileName() {
+		return fileName;
+	}
+
+
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	// Getters and Setters
     public Long getId() {
         return id;
     }
@@ -60,10 +86,19 @@ public class DocumentDTO {
         this.file = file;
     }
 
-    public byte[] getFileBytes() {
+    public String getFileBytes() {
         return fileBytes;
     }
-    public void setFileBytes(byte[] fileBytes) {
+    public void setFileBytes(String fileBytes) {
         this.fileBytes = fileBytes;
     }
+
+	public List<String> getListName() {
+		return listName;
+	}
+
+	public void setListName(List<String> listName) {
+		this.listName = listName;
+	}
+    
 }

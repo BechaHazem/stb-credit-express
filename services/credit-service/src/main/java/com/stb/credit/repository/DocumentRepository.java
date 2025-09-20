@@ -12,5 +12,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 	
     List<Document> findByLoanRequestIdAndCustomerId(Long loanRequestId, Long customerId);
     List<Document> findByLoanRequestId(Long loanRequestId);
+    List<Document> findByLoanRequestIdAndCustomerIdAndNameIn(Long loanRequestId, Long customerId, List<String> names);
 
 }

@@ -9,6 +9,8 @@ public class UserDTO {
     private String email;
     private Long clientNumber;
     private String agence;
+    private String username;
+
 
     public String getAgence() {
 		return agence;
@@ -55,6 +57,12 @@ public class UserDTO {
 	}
 	public void setCustomer(CustomerDTO customer) {
 		this.customer = customer;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
     
 }

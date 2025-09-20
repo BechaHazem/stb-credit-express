@@ -48,6 +48,14 @@ public class Customer {
 	    private String spousePhone;
 	    private String accountNumber;
 
+	    private BigDecimal score;
+	    
+		public BigDecimal getScore() {
+			return score;
+		}
+		public void setScore(BigDecimal score) {
+			this.score = score;
+		}
 	    
 		public String getAccountNumber() {
 			return accountNumber;

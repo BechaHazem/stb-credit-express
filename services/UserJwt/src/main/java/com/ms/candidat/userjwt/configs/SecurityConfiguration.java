@@ -1,6 +1,5 @@
 package com.ms.candidat.userjwt.configs;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +29,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // 1. allow everything under /api/auth (including /authenticate and OPTIONS)
-                        .requestMatchers("/api/auth/authenticate", "/api/auth/register", "/api/auth/logout").permitAll()
+                        .requestMatchers("/api/auth/authenticate", "/api/auth/register", "/api/auth/logout", "/api/auth/by-agence").permitAll()
                         .requestMatchers("/api/auth/profile").authenticated()
                         .requestMatchers("/admin/home").hasAuthority("CLIENT")
                         .requestMatchers("/user/home").hasAuthority("BANQUIER")
