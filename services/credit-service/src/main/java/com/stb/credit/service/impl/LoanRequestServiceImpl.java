@@ -221,10 +221,27 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         if(saved.getStep() == 3) {
         	saveDocs(saved);
         }
+        else if (saved.getStep() == 4) {
+        	generateLoanContract(saved);
+        }
         
         sendCustomerStatusUpdate(savedDTO);
         //generateLoanRequestPdf(saved);
         return savedDTO;
+    }
+    
+    void generateLoanContract(LoanRequest saved) {
+        byte[] pdfBytes = pdfReportService.generateLoanContract(saved);
+
+        String pdfUrl = cloudinaryService.uploadFile(pdfBytes, "loan_contract_" + saved.getId());
+
+        Document document = new Document();
+        document.setUrl(pdfUrl);
+        document.setCustomerId(saved.getCustomer().getId());
+        document.setLoanRequestId(saved.getId());
+        document.setName("Loan Contract");
+
+        documentRepository.save(document);
     }
     
     private void saveDocs(LoanRequest saved) {
@@ -242,6 +259,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     	document2.setLoanRequestId(saved.getId());
     	document2.setName("domiciliation de salaire");
     	listDocs.add(document2);
+    	
+    	Document document3 = new Document();
+    	document3.setCustomerId(saved.getCustomer().getId());
+    	document3.setLoanRequestId(saved.getId());
+    	document3.setName("Fiche de paie");
+    	listDocs.add(document3);
     	
     	documentRepository.saveAll(listDocs);
     	
@@ -324,7 +347,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
             bodyLine = "Félicitations ! Votre demande de crédit a été acceptée. "
                      + "Vous pouvez désormais signer le contrat préliminaire en ligne.";
         }
-        else if (loan.getStep() == 4) {
+        else if (loan.getStep() == 5) {
             subject = "Votre crédit a été émis avec succès";
             bodyLine = "Félicitations ! Votre crédit a été émis avec succès. "
                      + "Vous pouvez vous rendre à l’agence "
