@@ -42,6 +42,10 @@
                     .route("loan-attach", r -> r
                             .path("/api/loan-requests/**")
                             .uri("http://localhost:8094"))
+                    .route("credit-type", r -> r
+                            .path("/api/credit-types/**")
+                            .uri("http://localhost:8094"))
+
 
 
 

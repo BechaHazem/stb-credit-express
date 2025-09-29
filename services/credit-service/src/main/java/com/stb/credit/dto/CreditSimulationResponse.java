@@ -21,12 +21,16 @@ private BigDecimal loanAmount;
  private BigDecimal totalInterest;
  private BigDecimal apr;
  private List<AmortizationLineDTO> schedule;
+    private Long creditTypeId;
+    private String creditTypeLabel;
 
- // constructor
+
+    // constructor
  public CreditSimulationResponse(BigDecimal loanAmount, int loanTermMonths, int gracePeriodMonths,
                                  BigDecimal monthlyPayment, BigDecimal totalCost,
                                  BigDecimal totalInterest, BigDecimal apr,
-                                 List<AmortizationLineDTO> schedule) {
+                                 List<AmortizationLineDTO> schedule,
+                                 Long creditTypeId ,String creditTypeLabel ) {
      this.loanAmount = loanAmount;
      this.loanTermMonths = loanTermMonths;
      this.gracePeriodMonths = gracePeriodMonths;
@@ -35,6 +39,8 @@ private BigDecimal loanAmount;
      this.totalInterest = totalInterest;
      this.apr = apr;
      this.schedule = schedule;
+     this.creditTypeId = creditTypeId;
+     this.creditTypeLabel = creditTypeLabel;
  }
 
  // getters
@@ -45,7 +51,24 @@ private BigDecimal loanAmount;
  public BigDecimal getTotalCost() { return totalCost; }
  public BigDecimal getTotalInterest() { return totalInterest; }
  public BigDecimal getApr() { return apr; }
- public List<AmortizationLineDTO> getSchedule() { return schedule; }
+
+    public Long getCreditTypeId() {
+        return creditTypeId;
+    }
+
+    public void setCreditTypeId(Long creditTypeId) {
+        this.creditTypeId = creditTypeId;
+    }
+
+    public String getCreditTypeLabel() {
+        return creditTypeLabel;
+    }
+
+    public void setCreditTypeLabel(String creditTypeLabel) {
+        this.creditTypeLabel = creditTypeLabel;
+    }
+
+    public List<AmortizationLineDTO> getSchedule() { return schedule; }
 
 public void setLoanAmount(BigDecimal loanAmount) {
 	this.loanAmount = loanAmount;
