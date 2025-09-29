@@ -78,6 +78,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     public LoanRequestDTO createLoanRequest(LoanRequestDTO dto) {
         LoanRequest loanRequest = modelMapper.map(dto, LoanRequest.class);
         loanRequest.setAccountNumber(generateAccountNumber());
+
         // Update existing customer if provided
         if (dto.getCustomer() != null && dto.getCustomer().getId() != null) {
             Customer existingCustomer = customerRepository.findById(dto.getCustomer().getId())
@@ -89,11 +90,17 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         // Update simulation if simulationId is provided
         if (dto.getSimulationId() != null) {
             CreditSimulation simulation = simulationRepository.findById(dto.getSimulationId())
-                .orElseThrow(() -> new RuntimeException("Simulation not found"));
-            simulation.setEnabled(false); // disable it
-            simulationRepository.save(simulation); // persist change
+                    .orElseThrow(() -> new RuntimeException("Simulation not found"));
+
+            if (simulation.getCreditType() == null) {          // extra safety
+                throw new IllegalStateException("Simulation has no credit type");
+            }
+
+            simulation.setEnabled(false);
+            simulationRepository.save(simulation);
+            loanRequest.setCreditType(simulation.getCreditType().getType());
         }
-        
+
         LoanRequest saved = loanRequestRepository.save(loanRequest);
         LoanRequestDTO result = modelMapper.map(saved, LoanRequestDTO.class);
 
@@ -102,6 +109,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
         return result;
     }
+
     private String generateAccountNumber() {
         String prefix = "001-";
         String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -187,6 +195,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     public LoanRequestDTO updateLoanRequest(LoanRequestDTO dto) {
         LoanRequest existing = loanRequestRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Loan request not found"));
+
+        /*  keep the old credit type if the DTO omitted it  */
+        if (dto.getCreditType() == null) {
+            dto.setCreditType(existing.getCreditType());
+        }
+
 
         // Map all incoming fields onto the existing entity
         modelMapper.map(dto, existing);

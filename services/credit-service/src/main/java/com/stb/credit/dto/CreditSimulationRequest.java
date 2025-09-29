@@ -8,6 +8,15 @@ public class CreditSimulationRequest {
     private int  loanTermMonths; 
     
     private int gracePeriodMonths;
+	private Long creditTypeId;
+
+	public Long getCreditTypeId() {
+		return creditTypeId;
+	}
+
+	public void setCreditTypeId(Long creditTypeId) {
+		this.creditTypeId = creditTypeId;
+	}
 
 	public BigDecimal getLoanAmount() {
 		return loanAmount;
@@ -32,6 +41,6 @@ public class CreditSimulationRequest {
 	public void setGracePeriodMonths(int gracePeriodMonths) {
 		this.gracePeriodMonths = gracePeriodMonths;
 	}
-    
+
     
 }
