@@ -13,4 +13,5 @@ public interface LoanRequestService {
     List<LoanRequestDTO> getLoanRequestsByAgence(String agence);
     LoanRequestDTO updateLoanRequest(LoanRequestDTO dto);
     public void attachSignatureToLoanRequest(Long loanRequestId, String signatureUrl) throws IOException;
+    public void attachSignatureToFinalContract(Long loanRequestId, String signatureUrl) throws IOException;
 }

@@ -192,14 +192,6 @@ public class PdfReportService {
                     .useAllAvailableWidth()
                     .setMarginTop(20);
 
-            Cell bankCell = new Cell().add(new Paragraph("Lender\n\n\n\nSignature: ____________________"))
-                    .setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
-            Cell customerCell = new Cell().add(new Paragraph("Borrower\n\n\n\nSignature: ____________________"))
-                    .setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
-
-            signatureTable.addCell(bankCell);
-            signatureTable.addCell(customerCell);
-
             doc.add(signatureTable);
 
             doc.close();

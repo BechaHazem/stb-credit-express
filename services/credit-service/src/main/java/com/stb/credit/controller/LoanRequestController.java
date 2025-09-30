@@ -1,5 +1,6 @@
 package com.stb.credit.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,15 @@ public class LoanRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping("/{loanRequestId}/attach-signature-final")
+    public ResponseEntity<Void> attachSignatureFinal(
+            @PathVariable Long loanRequestId,
+            @RequestParam String signatureUrl) throws IOException {
+        loanRequestService.attachSignatureToFinalContract(loanRequestId, signatureUrl);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 

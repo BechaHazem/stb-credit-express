@@ -382,4 +382,61 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         email.setTemplateModel(model);
         notificationClient.sendEmail(email);
     }
+
+    @Override
+    @Transactional
+    public void attachSignatureToFinalContract(Long loanRequestId, String signatureUrl) throws IOException {
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
+
+        // 1. Récupérer le document du contrat (Loan Contract et non Loan Request)
+        Document document = documentRepository.findByLoanRequestId(loanRequestId)
+                .stream()
+                .filter(doc -> "Loan Contract".equalsIgnoreCase(doc.getName()))  // <- filtrer le bon
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Loan Contract PDF not found"));
+
+        byte[] pdfBytes = cloudinaryService.downloadFile(document.getUrl());
+
+        // 2. Télécharger la signature depuis Cloudinary
+        byte[] signatureBytes = cloudinaryService.downloadFile(signatureUrl);
+
+        // 3. Fusionner la signature dans le contrat PDF
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PdfDocument pdfDoc = new PdfDocument(
+                new PdfReader(new ByteArrayInputStream(pdfBytes)),
+                new PdfWriter(baos)
+        );
+        com.itextpdf.layout.Document doc = new com.itextpdf.layout.Document(pdfDoc);
+
+        ImageData imageData = ImageDataFactory.create(signatureBytes);
+        Image signatureImage = new Image(imageData);
+
+        // Coordonnées adaptées à la case "Borrower"
+        float boxX = 320;   // moves left/right. Increase to go more right
+        float boxY = 40;    // smaller Y = closer to bottom. Try 40-60
+        float boxWidth = 200;
+        float boxHeight = 60;
+
+        signatureImage.scaleToFit(boxWidth - 20, boxHeight - 20);
+        signatureImage.setFixedPosition(
+                boxX + 10,
+                boxY + (boxHeight - signatureImage.getImageScaledHeight()) / 2
+        );
+
+        doc.add(signatureImage);
+        doc.close();
+
+        // 4. Ré-uploader le PDF signé
+        String signedPdfUrl = cloudinaryService.uploadFile(
+                baos.toByteArray(),
+                "loan_contract_signed_" + loanRequestId
+        );
+
+        // 5. Mettre à jour le document existant
+        document.setUrl(signedPdfUrl);
+        document.setName("Signed Loan Contract");
+        documentRepository.save(document);
+    }
+
 }
