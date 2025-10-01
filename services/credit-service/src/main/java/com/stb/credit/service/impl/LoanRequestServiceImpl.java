@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -73,26 +74,28 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 	
 	@Autowired
 	private UserClient userClient; 
+	
+	@Value("${app.frontend.url}")
+	private String frontendUrl;
 
     @Override
     public LoanRequestDTO createLoanRequest(LoanRequestDTO dto) {
         LoanRequest loanRequest = modelMapper.map(dto, LoanRequest.class);
         loanRequest.setAccountNumber(generateAccountNumber());
 
-        // Update existing customer if provided
+
         if (dto.getCustomer() != null && dto.getCustomer().getId() != null) {
             Customer existingCustomer = customerRepository.findById(dto.getCustomer().getId())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-            modelMapper.map(dto.getCustomer(), existingCustomer); // merge changes
+            modelMapper.map(dto.getCustomer(), existingCustomer); 
             loanRequest.setCustomer(existingCustomer);
         }
 
-        // Update simulation if simulationId is provided
         if (dto.getSimulationId() != null) {
             CreditSimulation simulation = simulationRepository.findById(dto.getSimulationId())
                     .orElseThrow(() -> new RuntimeException("Simulation not found"));
 
-            if (simulation.getCreditType() == null) {          // extra safety
+            if (simulation.getCreditType() == null) {        
                 throw new IllegalStateException("Simulation has no credit type");
             }
 
@@ -104,7 +107,6 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest saved = loanRequestRepository.save(loanRequest);
         LoanRequestDTO result = modelMapper.map(saved, LoanRequestDTO.class);
 
-      // generateLoanRequestPdf(saved);
         sendMail(result);
 
         return result;
@@ -144,8 +146,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         model.put("loanAmount", loan.getLoanAmount()); 
         model.put("loanType", loan.getCreditType());
         model.put("submissionDate", LocalDate.now().toString());
-        model.put("url", "http://localhost:4200/");
-
+        model.put("url", frontendUrl);
 
         bankers.stream()
         .map(UserDTO::getEmail)
@@ -196,16 +197,13 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest existing = loanRequestRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        /*  keep the old credit type if the DTO omitted it  */
         if (dto.getCreditType() == null) {
             dto.setCreditType(existing.getCreditType());
         }
 
 
-        // Map all incoming fields onto the existing entity
         modelMapper.map(dto, existing);
 
-        // If customer data came in the DTO, merge it too
         if (dto.getCustomer() != null && dto.getCustomer().getId() != null) {
             Customer customer = customerRepository.findById(dto.getCustomer().getId())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -226,7 +224,6 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         }
         
         sendCustomerStatusUpdate(savedDTO);
-        //generateLoanRequestPdf(saved);
         return savedDTO;
     }
     
@@ -276,17 +273,14 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        // 1. Récupérer le document PDF de ce loan request
         Document document = documentRepository.findByLoanRequestId(loanRequestId)
                 .stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Loan request PDF not found"));
 
         byte[] pdfBytes = cloudinaryService.downloadFile(document.getUrl());
 
-        // 2. Télécharger la signature depuis Cloudinary
         byte[] signatureBytes = cloudinaryService.downloadFile(signatureUrl);
 
-// 3. Fusionner la signature dans le PDF
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfDocument pdfDoc = new PdfDocument(
                 new PdfReader(new ByteArrayInputStream(pdfBytes)),
@@ -297,18 +291,15 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         ImageData imageData = ImageDataFactory.create(signatureBytes);
         Image signatureImage = new Image(imageData);
 
-// Coordonnées de la box (mêmes que lors de la génération du PDF)
-        float boxX = 100;      // coin gauche du rectangle
-        float boxY = 120;      // coin bas du rectangle
+        float boxX = 100;      
+        float boxY = 120;      
         float boxWidth = 400;
         float boxHeight = 100;
 
-// Taille max de la signature (un peu plus petite que la box)
         signatureImage.scaleToFit(boxWidth - 40, boxHeight - 40);
 
-// Positionner la signature en haut à gauche de la box
-        float marginLeft = 15;   // marge gauche
-        float marginTop = 1;    // marge haute
+        float marginLeft = 15;   
+        float marginTop = 1;    
 
         signatureImage.setFixedPosition(
                 boxX + marginLeft,
@@ -318,26 +309,22 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         doc.add(signatureImage);
         doc.close();
 
-        // 4. Ré-uploader le nouveau PDF signé
         String signedPdfUrl = cloudinaryService.uploadFile(
                 baos.toByteArray(),
                 "loan_request_signed_" + loanRequestId
         );
 
-        // 5. Mettre à jour le document existant
         document.setUrl(signedPdfUrl);
         document.setName("Signed Loan Request PDF");
         documentRepository.save(document);
     }
 
     void sendCustomerStatusUpdate(LoanRequestDTO loan) {
-        // 1. recipient
         String customerEmail = loan.getCustomer() != null ? loan.getCustomer().getEmail() : null;
         if (!StringUtils.hasText(customerEmail)) {
-            return;   // nothing to do
+            return;   
         }
 
-        // 2. derive wording
         String libelle = loan.getLibelle() == null ? "En cours" : loan.getLibelle();
         String subject;
         String bodyLine;
@@ -364,7 +351,6 @@ public class LoanRequestServiceImpl implements LoanRequestService {
                      + libelle + ".";
         }
 
-        // 3. build model
         Map<String, Object> model = new HashMap<>();
         model.put("customerName", loan.getCustomer().getFullName());
         model.put("accountNumber", loan.getAccountNumber());
@@ -372,9 +358,8 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         model.put("loanAmount", loan.getLoanAmount());
         model.put("libelle", libelle);
         model.put("bodyLine", bodyLine);
-        model.put("actionUrl", "http://localhost:4200/");
-
-        // 4. send
+        model.put("actionUrl", frontendUrl);
+        
         EmailDTO email = new EmailDTO();
         email.setTo(customerEmail);
         email.setSubject(subject);
@@ -389,7 +374,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        // 1. Récupérer le document du contrat (Loan Contract et non Loan Request)
+
         Document document = documentRepository.findByLoanRequestId(loanRequestId)
                 .stream()
                 .filter(doc -> "Loan Contract".equalsIgnoreCase(doc.getName()))  // <- filtrer le bon
@@ -398,10 +383,8 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
         byte[] pdfBytes = cloudinaryService.downloadFile(document.getUrl());
 
-        // 2. Télécharger la signature depuis Cloudinary
         byte[] signatureBytes = cloudinaryService.downloadFile(signatureUrl);
 
-        // 3. Fusionner la signature dans le contrat PDF
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfDocument pdfDoc = new PdfDocument(
                 new PdfReader(new ByteArrayInputStream(pdfBytes)),
@@ -412,9 +395,8 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         ImageData imageData = ImageDataFactory.create(signatureBytes);
         Image signatureImage = new Image(imageData);
 
-        // Coordonnées adaptées à la case "Borrower"
-        float boxX = 320;   // moves left/right. Increase to go more right
-        float boxY = 40;    // smaller Y = closer to bottom. Try 40-60
+        float boxX = 320;  
+        float boxY = 40;   
         float boxWidth = 200;
         float boxHeight = 60;
 
@@ -427,13 +409,11 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         doc.add(signatureImage);
         doc.close();
 
-        // 4. Ré-uploader le PDF signé
         String signedPdfUrl = cloudinaryService.uploadFile(
                 baos.toByteArray(),
                 "loan_contract_signed_" + loanRequestId
         );
 
-        // 5. Mettre à jour le document existant
         document.setUrl(signedPdfUrl);
         document.setName("Signed Loan Contract");
         documentRepository.save(document);

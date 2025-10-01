@@ -1,16 +1,18 @@
 package com.ms.candidat.signaturemicroservice.services;
 
+import java.io.IOException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.ms.candidat.client.UserClient;
 import com.ms.candidat.signaturemicroservice.Dto.UserDTO;
 import com.ms.candidat.signaturemicroservice.Repo.SignatureRepo;
 import com.ms.candidat.signaturemicroservice.models.Signature;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,26 +26,23 @@ public class SignatureService {
      * Upload a new signature, deactivate old one, save new one, return signature with Cloudinary URL
      */
     public Signature uploadSignature(MultipartFile file, String cookie) throws IOException {
-        // Récupérer l’utilisateur connecté
+
         UserDTO user = userClient.getProfile(cookie);
         Long customerId = user.getCustomer().getId();
 
-        // Désactiver l’ancienne signature si elle existe
         signatureRepo.findByCustomerIdAndActiveTrue(customerId).ifPresent(sig -> {
             sig.setActive(false);
             signatureRepo.save(sig);
         });
 
-        // Uploader sur Cloudinary
         var uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                "folder", "signatures", // pour organiser les fichiers
-                "public_id", "signature_" + customerId, // nom custom
-                "overwrite", true // remplacer si ré-upload
+                "folder", "signatures", 
+                "public_id", "signature_" + customerId, 
+                "overwrite", true 
         ));
 
         String url = (String) uploadResult.get("secure_url");
 
-        // Créer et sauvegarder la nouvelle signature
         Signature newSig = Signature.builder()
                 .customerId(customerId)
                 .signatureUrl(url)

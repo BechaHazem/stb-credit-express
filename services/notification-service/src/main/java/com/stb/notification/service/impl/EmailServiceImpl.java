@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    private final String fromEmail = "stb.credit.express@gmail.com"; // your spring.mail.username
+    private final String fromEmail = "stb.credit.express@gmail.com";
 
     @Override
     public void sendSimpleEmail(EmailDTO emailDTO) {
@@ -52,7 +52,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             String htmlContent = templateEngine.process(emailDTO.getTemplateName(), context);
-            helper.setText(htmlContent, true); // true = HTML
+            helper.setText(htmlContent, true);
 
             mailSender.send(mimeMessage);
 

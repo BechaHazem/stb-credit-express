@@ -48,7 +48,7 @@ public class AuthenticationController {
 
         Cookie cookie = new Cookie("jwt", authResponse.getToken());
         cookie.setHttpOnly(true);
-        cookie.setSecure(false);   // <-- false for localhost
+        cookie.setSecure(false);   
         cookie.setPath("/");
         response.addCookie(cookie);
 
@@ -73,7 +73,7 @@ public class AuthenticationController {
         Cookie cookie = new Cookie("jwt", null);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);          // delete cookie
+        cookie.setMaxAge(0);          
         res.addCookie(cookie);
         return ResponseEntity.ok().build();
     }

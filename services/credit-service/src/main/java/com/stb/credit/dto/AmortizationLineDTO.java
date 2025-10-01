@@ -12,7 +12,6 @@ public class AmortizationLineDTO {
  private BigDecimal principal;
  private BigDecimal closingBalance;
 
- // constructor
  public AmortizationLineDTO(int period, BigDecimal openingBalance, BigDecimal payment,
                          BigDecimal interest, BigDecimal principal, BigDecimal closingBalance) {
      this.period = period;
@@ -23,7 +22,7 @@ public class AmortizationLineDTO {
      this.closingBalance = closingBalance;
  }
 
- // getters
+
  public int getPeriod() { return period; }
  public BigDecimal getOpeningBalance() { return openingBalance; }
  public BigDecimal getPayment() { return payment; }

@@ -1,7 +1,15 @@
 package com.ms.candidat.signaturemicroservice.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "signatures")
@@ -15,9 +23,9 @@ public class Signature {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long customerId;   // comes from userjwt service
+    private Long customerId;   
 
-    private String signatureUrl; // URL of uploaded signature (Cloudinary / local)
+    private String signatureUrl;
 
-    private boolean active;     // true = current signature, false = old
+    private boolean active;     
 }
