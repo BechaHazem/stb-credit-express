@@ -102,7 +102,17 @@
             <artifactId>cloudinary-http44</artifactId>
             <version>1.33.0</version>
         </dependency>
+<!-- Spring Cloud Config Client -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
 
+<!-- Spring Cloud Bootstrap -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+</dependency>
     </dependencies>
 
     <dependencyManagement>
