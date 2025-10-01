@@ -1,12 +1,18 @@
 package com.ms.candidat.signaturemicroservice.controllers;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.ms.candidat.signaturemicroservice.models.Signature;
 import com.ms.candidat.signaturemicroservice.services.SignatureService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/signatures")
@@ -20,7 +26,7 @@ public class SignatureController {
             String cookie = req.getHeader("Cookie");
             return ResponseEntity.ok(signatureService.uploadSignature(file,cookie));
         } catch (Exception e) {
-            e.printStackTrace(); // log full error
+            e.printStackTrace(); 
             return ResponseEntity.badRequest().build();
         }
     }

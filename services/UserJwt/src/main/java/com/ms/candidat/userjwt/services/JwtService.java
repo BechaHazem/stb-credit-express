@@ -21,7 +21,7 @@ public class JwtService {
     private static final String SECRET_KEY ="ewdVfFgasYaiCEdvRnIi8qKBbSsMVAMTO7A3oqB1knw49MQmz89x5xJlHTwGmzCZ";
 
     public String extractUserEmail(String jwt) {
-        //extract the subject(email or username...) from the claim
+
         return extractClaim(jwt , Claims::getSubject);
     }
 
@@ -58,14 +58,10 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                //pass the email(unique)
                 .setSubject(userDetails.getUsername())
-                //begin
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                //expired
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSigningToken(), SignatureAlgorithm.HS256)
-                //generate the token
                 .compact();
 
     }

@@ -76,7 +76,7 @@ public class DocumentsServiceImpl implements DocumentsService {
 
 	    for (DocumentDTO dto : documents) {
 	        if (dto.getFileBytes() != null) {
-	            // Clean base64 prefix if needed
+
 	            String base64Data = dto.getFileBytes();
 	            if (base64Data.contains(",")) {
 	                base64Data = base64Data.split(",")[1];
@@ -84,10 +84,8 @@ public class DocumentsServiceImpl implements DocumentsService {
 
 	            byte[] fileData = Base64.getDecoder().decode(base64Data);
 
-	            // Upload to Cloudinary
 	            String url = cloudinaryService.uploadFile(fileData, dto.getFileName());
 
-	            // Persist
 	            Document entity = new Document();
 	            entity.setId(dto.getId());
 	            entity.setCustomerId(dto.getCustomerId());

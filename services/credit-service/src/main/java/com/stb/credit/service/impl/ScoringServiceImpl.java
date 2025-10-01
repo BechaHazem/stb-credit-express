@@ -35,13 +35,10 @@ public class ScoringServiceImpl implements ScoringService {
 	@Override
 	public Map<String, Object> calculateScore(LoanRequestDTO loan) {
 	    try {
-	        // Replace with your actual Cloudinary file URL
 	        String cloudinaryFileUrl = "https://res.cloudinary.com/dl0lojylt/raw/upload/v1757009255/CUSTOMERSCORE_jm0qeg.xlsx";
 
-	        // Download file as byte array
 	        byte[] fileBytes = cloudinaryService.downloadFile(cloudinaryFileUrl);
 
-	        // Create workbook from byte array
 	        try (InputStream inputStream = new ByteArrayInputStream(fileBytes);
 	             XSSFWorkbook finWorkBook = new XSSFWorkbook(inputStream)) {
 
@@ -50,7 +47,6 @@ public class ScoringServiceImpl implements ScoringService {
 
 	            setInputsToExcelSheet(loan, inSheet);
 
-	            // Recalculate all formulas
 	            finWorkBook.setForceFormulaRecalculation(true);
 	            XSSFFormulaEvaluator.evaluateAllFormulaCells(finWorkBook);
 
@@ -67,9 +63,7 @@ public class ScoringServiceImpl implements ScoringService {
 
 	                if (keyCell != null && valueCell != null) {
 	                    String cellKey = keyCell.getStringCellValue();
-//	                    if (cellKey != null && !cellKey.isBlank()) {
-//	                        mapResults.put(cellKey, readCellValue(valueCell));
-//	                    }
+
 	                	if (valueCell.getCellType() == org.apache.poi.ss.usermodel.CellType.FORMULA) {
 	                	    evaluator.evaluateInCell(valueCell);
 	                	}
@@ -103,7 +97,6 @@ public class ScoringServiceImpl implements ScoringService {
 	        case BLANK:
 	            return null;
 	        default:
-	            /* if somehow still error, return raw string */
 	            return cell.toString();
 	    }
 	}
@@ -122,14 +115,12 @@ public class ScoringServiceImpl implements ScoringService {
 	        }
 	    };
 
-	    /* ---------- Loan ---------- */
 	    write.accept("loanAmount",      loan.getLoanAmount());
 	    write.accept("loanDuration",    loan.getLoanDuration());
 	    write.accept("gracePeriod",     loan.getGracePeriod());
 	    write.accept("creditType",      loan.getCreditType());
 	    write.accept("loanPurpose",     loan.getLoanPurpose());
 
-	    /* ---------- Customer ---------- */
 	    CustomerDTO c = loan.getCustomer();
 	    write.accept("profession",      c.getProfession());
 	    write.accept("employer",        c.getEmployer());

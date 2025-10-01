@@ -44,14 +44,14 @@ public class BanquierService {
         );
     }
 
-    //generate default client number
+
     private Long generateUniqueClientNumber() {
         int attempts = 0;
         long candidate;
         do {
         	candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
             attempts++;
-            if (attempts > 10) {                 // ultra-safe fallback
+            if (attempts > 10) {            
                 candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;
             }
         } while (UserRepo.existsByClientNumber(candidate));
@@ -59,7 +59,6 @@ public class BanquierService {
         return candidate;
     }
 
-    //update banquier
     public User updateBanquier(Integer id, BanquierRequest dto) {
         String username;
         username = dto.email();
@@ -90,7 +89,7 @@ public class BanquierService {
         }
         UserRepo.delete(user);
     }
-    //get banquier
+
     public List<User> getAllBanquiers() {
         return UserRepo.findAll()
                 .stream()

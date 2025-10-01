@@ -62,7 +62,7 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())// Use the role from the request
+                .role(request.getRole())
                 .clientNumber(clientNumber)
                 .phone(request.getPhone())
                 .username(username)
@@ -82,10 +82,10 @@ public class AuthenticationService {
         int attempts = 0;
         long candidate;
         do {
-//            candidate = 1_000_000_000L + RND.nextLong(9_000_000_000L);
+
         	candidate = 1_000_000_000L + (RND.nextLong() & Long.MAX_VALUE) % 9_000_000_000L;
             attempts++;
-            if (attempts > 10) {                 // ultra-safe fallback
+            if (attempts > 10) {            
                 candidate = System.nanoTime() & 0x3FFFFFFFFFFFFFFFL;
             }
         } while (UserRepo.existsByClientNumber(candidate));
@@ -141,9 +141,9 @@ public class AuthenticationService {
     }
     
     public List<UserDTO> findByAgence(String agence) {
-        return UserRepo.findByAgenceAndRole(agence, Role.BANQUIER) // récupère la liste d’entités User
+        return UserRepo.findByAgenceAndRole(agence, Role.BANQUIER)
                 .stream()
-                .map(user -> modelMapper.map(user, UserDTO.class)) // convertit User → UserDTO
+                .map(user -> modelMapper.map(user, UserDTO.class))
                 .collect(Collectors.toList());    }
 
 
