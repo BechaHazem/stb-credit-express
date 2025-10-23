@@ -329,7 +329,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         String subject;
         String bodyLine;
 
-        if (loan.getStep() == 1 && "sign-pre-contract".equalsIgnoreCase(libelle)) {
+        if (loan.getStep() == -1 && "rejected".equalsIgnoreCase(libelle)) {
+            subject = "Votre demande de crédit a été refusée";
+            bodyLine = "Nous regrettons de vous informer que votre demande de crédit a été refusée après examen. "
+                     + "Pour plus d'informations, veuillez contacter votre conseiller bancaire.";
+        }
+        else if (loan.getStep() == 1 && "sign-pre-contract".equalsIgnoreCase(libelle)) {
             subject = "Votre demande de crédit a été acceptée";
             bodyLine = "Félicitations ! Votre demande de crédit a été acceptée. "
                      + "Vous pouvez désormais signer le contrat préliminaire en ligne.";
